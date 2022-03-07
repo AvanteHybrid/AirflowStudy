@@ -23,3 +23,10 @@
 | 2022.05.18 |  13     |  윤병현   |
 | 2022.05.25 |  14     |  조해윤   |
 | 2022.06.01 |  18     |  김지중   |
+
+
+## docker-compose로 quick start
+- [Apache Airflow quick start](https://airflow.apache.org/docs/apache-airflow/stable/start/docker.html)
+- 현재 perception-test:9090으로 접속 가능!
+
+- Only for quick start!
