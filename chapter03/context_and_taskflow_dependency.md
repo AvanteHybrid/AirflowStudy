@@ -23,7 +23,7 @@
 # Getting context with python operator
 
 ## 발단
-python operator에서 `{{ds}}`와 같은 template를 사용해보려고 하였다. 그러나 date format string이 아닌 `{{ds}}`가 그대로 출력되었다. 따라서, python operator에서는 jinja가 아닌 다른 방식으로 context를 불러옴을 알 수 있었다. Taskflow API에서는 
+python operator에서 `{{ds}}`와 같은 template를 사용해보려고 하였다. 그러나 date format string이 아닌 `{{ds}}`가 그대로 출력되었다. 따라서, python operator에서는 jinja가 아닌 다른 방식으로 context를 불러옴을 알 수 있었다.
 ```python
 def next_ds_python():
     print("{{ds}}") # does not work. The result is "{{ds}}" but not the date format we wanted.
@@ -70,7 +70,7 @@ Taskflow api 예제코드를 돌려보니, dependency가 자동으로 세팅되�
     <img src="./images/capture_taskflow_without_dependencies.png" width="600"/>
 </p>
 
-## return이 다른 task에 넣어지지 않아 automatic dependency setting이 일어나지 않더라도, `A >> b`와 같은 방식으로 dependency 세팅 가능!
+## return이 다른 task에 넣어지지 않아 automatic dependency setting이 일어나지 않더라도, `A >> B`와 같은 방식으로 dependency 세팅 가능!
 [Taskflow with manual dependencies](./taskflow_with_manual_dependencies.py)
 <p align="left">
     <img src="./images/capture_taskflow_with_manual_dependencies.png" width="600"/>
