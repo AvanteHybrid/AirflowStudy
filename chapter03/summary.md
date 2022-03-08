@@ -27,6 +27,7 @@
 
 ### schedule_interval 파라미터 설정
 - [airflow preset](https://airflow.apache.org/docs/apache-airflow/1.10.1/scheduler.html#dag-runs) 사용
+
   ![](./images/capture_0.png)
 - cron-based interval
   - 크론 문법에 따라 복잡한 스케쥴링이 가능하다.
