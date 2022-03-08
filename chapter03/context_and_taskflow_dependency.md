@@ -28,7 +28,7 @@ python operator에서 `{{ds}}`와 같은 template를 사용해보려고 하였�
 def next_ds_python():
     print("{{ds}}") # does not work. The result is "{{ds}}" but not the date format we wanted.
 ```
-
+[예제](./context_test.py)
 
 ## 두 가지 context load method: old and new
 
@@ -54,6 +54,9 @@ def my_task():
     context = get_current_context()
     ds = context["ds"]
 ```
+
+## filter 문법 사용 불가
+`| ds`와 같은 filter 문법은 param과 dict를 사용하는 python operator의 문제로 사용할 수 없는 것 처럼 보인다. `next_ds`와 같은 문법은 deprecated되었으므로, `data_interval_end`로 datetime을 불러온 후, 이를 포매팅 하여야 한다.
 
 # Taskflow API는 자동으로 dependency를 세팅한다
 
