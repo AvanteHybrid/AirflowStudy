@@ -71,7 +71,7 @@
 ### Templating
   - [여기](https://airflow.apache.org/docs/apache-airflow/stable/templates-ref.html)서 예약 변수 목록을 확인할 수 있다.
   - [CLI tool](https://airflow.readthedocs.io/en/1.10.14/cli-ref.html#render)을 통해서 템플릿 렌더링이 잘 되는 지 확인해볼 수 있다.
-  - `PythonOperator`의 경우 [예제](https://github.com/BasPH/data-pipelines-with-apache-airflow/blob/master/chapter03/dags/06_templated_query.py)와 같이 templates_dict 파라미터를 통해 넘겨줄 수 있다.
+  - `PythonOperator`의 경우 [예제](https://github.com/BasPH/data-pipelines-with-apache-airflow/blob/master/chapter03/dags/08_templated_path.py)와 같이 templates_dict 파라미터를 통해 넘겨줄 수 있다.
     - 혹은 [이런 식으로](https://airflow.apache.org/docs/apache-airflow/stable/concepts/operators.html#concepts-jinja-templating) `template_fields`가 정의된 class instance를 op_args로 넣어줄 수 있나보다.
 
 
@@ -82,7 +82,7 @@
 - interval 기준으로 interval start / interval end로 나뉠 수 있을텐데.
   - 실제 dag이 실행되는 시점은 interval end다.
   - 하지만 이 interval을 대표하는 시간은 interval start로 보는게 보다 합리적이라 execution_date를 interval start로 두는 것 같다.
-  - 예를 들어 2019-01-03 00:00 < x <= 2019-01-04 00:00의 시간 동안 축적된 데이터에 대해서 작업을 하는데 2019-01-04로 적기는 뭐해서..
+  - 예를 들어 2019-01-03 00:00 <= x < 2019-01-04 00:00의 시간 동안 축적된 데이터에 대해서 작업을 하는데 2019-01-04로 적기는 뭐해서..
 
 ### Backfilling
 
