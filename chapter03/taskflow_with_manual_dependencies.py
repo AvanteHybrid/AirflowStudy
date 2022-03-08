@@ -11,7 +11,7 @@ from airflow.operators.python import get_current_context
     tags=['example'],
     end_date=datetime.datetime(year=2022, month=3, day=20)
 )
-def taskflow_without_dependencies():
+def taskflow_with_dependencies():
     @task
     def first_task(next_ds=None):
         print(next_ds)
@@ -28,4 +28,4 @@ def taskflow_without_dependencies():
     # However, we can set dependencies just like using old style operators as below
     a >> b
 
-test = taskflow_without_dependencies()
+test = taskflow_with_dependencies()

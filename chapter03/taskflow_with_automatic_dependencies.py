@@ -9,7 +9,7 @@ from airflow.decorators import dag, task
     catchup=False,
     tags=['example'],
 )
-def testing_taskflow():
+def taskflow_with_automatic_dependencies():
     """
     ### TaskFlow API Tutorial Documentation
     This is a simple ETL data pipeline example which demonstrates the use of
@@ -57,4 +57,4 @@ def testing_taskflow():
     order_data = extract()
     order_summary = transform(order_data)
     load(order_summary["total_order_value"])
-testing_ta = testing_taskflow()
+testing_ta = taskflow_with_automatic_dependencies()
