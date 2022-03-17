@@ -11,7 +11,8 @@ jinja templating 초보 입장에서 왜 template을 이용해서 파일들의 �
 ## `template_searchpath`는 jinja를 위한 것이 맞다.
 일단 [official doc](https://airflow.apache.org/docs/apache-airflow/1.10.4/_api/airflow/models/dag/index.html#airflow.models.dag.DAG)에 보면 `template_searchpath`에 대해 아래와 같이 간단한 설명을 볼 수 있다.
 ```
-This list of folders (non relative) defines where jinja will look for your templates. Order matters. Note that jinja/airflow includes the path of your DAG file by default.
+This list of folders (non relative) defines where jinja will look for your templates.
+Order matters. Note that jinja/airflow includes the path of your DAG file by default.
 ```
 
 하지만 이 설명은 나같은 jinja template 초보에게는 혼란만 줄 뿐이다.
