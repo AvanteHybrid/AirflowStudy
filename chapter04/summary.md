@@ -1,11 +1,13 @@
 # Templating tasks using the Airflow context
 
+
 ### This chapter handles
 
 - 템플릿을 적용된 variable을 렌더링
 - PythonOperator vs 다른 operator들 (variable 템플레이팅의 방식이 다름!)
 - 디버깅을 위해 템플릿이 적용된 변수들을 렌더링하기
 - 외부 시스템을 operator를 이용하기
+
 
 ### 예제: 주식 예측 툴
 
@@ -16,6 +18,7 @@
   - read data
   - insert data to DB
 
+
 ### Airflow로 프로세싱할 데이터 조사하기
 
 #### 어떻게 incremental data(단위 시간 당의 데이터)를 불러올/처리할(load) 것인지 정하기
@@ -23,11 +26,13 @@
 - 데이터의 usecase에 맞춰서 데이터를 불러올/처리할 방식을 정할 것!
 - 파이프라인을 설계하면서 다루어야 할 예제 질문: "이 데이터를 다시 프로세싱하는 경우가 있을까?", "어떻게 데이터를 받아야할까?(주기, 데이터 사이즈, 포맷 등)"
 
+
 ### Task context와 Jinja Templating
 
 이미 사용법은 chap.3에서 다루었지만, 이게 *어떻게 작동하는지*에 대해서 알아보도록 하자
 
 - 템플레이팅의 목적: 코딩 시에 정해지지 않고, 실행시에 정해지는 값들을 편리하게 집어넣기.
+
 
 #### Operator의 매개변수(argument)에 템플레이팅 하는 방법
 
@@ -52,6 +57,7 @@ get_data = BashOperator(
 - `execution_date`와 같은 datetime type은 python의 datetime이 아니라, pendulum을 사용한다. pendulum은 datetime의 모든 기능을 가지고 있으므로, datetime과 똑같이 사용할 수 있다.
 - templating되는 operator의 field(argument)는 해당 Operator의 class attribute인 `template_fields`에 정의되어 있다.
 
+
 #### 템플레이팅 가능한 variable들
 
 1. [여기](https://airflow.apache.org/docs/apache-airflow/stable/templates-ref.html)에서 예약 변수 목록을 확인할 수 있다. Chapter 3에서 보앗듯, 책과 달리 deprecated 된 variable들 존재함.
@@ -61,6 +67,7 @@ get_data = BashOperator(
 def _print_context(**context):
     print(context)
 ```
+
 
 #### Python operator에 templating하기
 
@@ -96,6 +103,7 @@ def _print_context(**context):
   ```
 
 - Note: op_kwargs/op_args를 통해 templating/rendering된 variable은 string이지만, variable의 원래 type으로도 가져올 수 있다. [rendering fiedls as native python objects](https://airflow.apache.org/docs/apache-airflow/stable/concepts/operators.html#rendering-fields-as-native-python-objects)
+
 
 #### Python operator에 variable 전달하기
 
@@ -144,6 +152,7 @@ get_data = PythonOperator(
 
 - Note: PythonOperator의 template_fields가 ('templates_dict', 'op_args', 'op_kwargs') 이기 때문이다.
 
+
 #### 템플레이팅 된 매개변수 검사하기(TaskFlow API도 동일)
 두가지 방법이 존재한다.
 1. Airflow 웹에 접근해 rendered 된 task의 매개변수 확인하기
@@ -156,15 +165,17 @@ get_data = PythonOperator(
         - 이는 당연하기도 한데, scheduling이 되어 있지 않으면 원하는 날짜의 실행기록에 접근하여 rendered 페이지에 들어갈 수 없기 때문이다.
     - 따라서, 아직 scheduling이 되지 않은, 개발단계에서는 적합하지 않은 방식일 수 있다.
 
+
 2. Airflow CLI 이용하기
 `airflow tasks render [dag id] [task id] [원하는 실행 일]` 로 테스트를 할 수 있다.
 ![](./images/airflow_cli_rendering.png)
 
-해당 커맨드는 Airflow의 작동 기록에 남지 않는다(metastore에 남지 않는다). 따라서 더 가볍고 유연하게 테스트할 수 있다.
+ - 해당 커맨드는 Airflow의 작동 기록에 남지 않는다(metastore에 남지 않는다). 따라서 더 가볍고 유연하게 테스트할 수 있다.
 
- - Note:오직 원하는 task만을 실행하기 때문에, 전/후의 task는 실행되지 않는다
+ - Note: 오직 원하는 task만을 실행하기 때문에, 전/후의 task는 실행되지 않는다
     - 따라서, 전의 task에서 값을 불러오는 경우, 해당 argument는 None으로 처리된다.
     - `order_data_dict`는 원래 None이 아니다. 다만 전의 task에서 값이 도출되기에 None으로 처리되었다.
+
 
 ### 다른 시스템과 연결하여 사용하기(DB 사용 예)
 
@@ -208,7 +219,7 @@ get_data = PythonOperator(
 2. 디스크나 DB와 같이 영구적인 공간에 중간 데이터를 보관하기
  - 대량의 data를 전달하는 것에 적합한 방식이다.
  - 중간 데이터를 체크하기 더욱 용이하다.
-책에서는 [PythonOperator를 이용해 pageview를 processing하여 고정된 이름으로 file을 남기고, 이를 다른 sql구문으로 만들어 file에 저장하고 있다.](https://github.com/BasPH/data-pipelines-with-apache-airflow/blob/master/chapter04/dags/listing_4_20.py#L49) PostgresOperator는 이렇게 남겨진 [sql구문에 접근하여 DB에 데이터를 임포트한다.](https://github.com/BasPH/data-pipelines-with-apache-airflow/blob/master/chapter04/dags/listing_4_20.py#L73)
+ - 책에서는 [PythonOperator를 이용해 pageview를 processing하여 고정된 이름으로 file을 남기고, 이를 다른 sql구문으로 만들어 file에 저장하고 있다.](https://github.com/BasPH/data-pipelines-with-apache-airflow/blob/master/chapter04/dags/listing_4_20.py#L49) PostgresOperator는 이렇게 남겨진 [sql구문에 접근하여 DB에 데이터를 임포트한다.](https://github.com/BasPH/data-pipelines-with-apache-airflow/blob/master/chapter04/dags/listing_4_20.py#L73)
 
     ```python
     def _fetch_pageviews(pagenames, execution_date):
@@ -243,6 +254,7 @@ get_data = PythonOperator(
     )
     ```
 
+
 #### Postgres DB 접속을 위한 패키지 설치하기
  - PostgresDB, Elasticsearch 등 Airflow는 많은 외부 시스템을 지원하여, Operator로 사용할 수 있게 한다.
  - Airflow 2 이후에는 이런 패키지들은 Core operator(Bash/PythonOperator)와 달리 별도로 설치를 해주어야한다.
@@ -251,6 +263,7 @@ get_data = PythonOperator(
     ```bash
     $ pip install apache-airflow-providers-postgres
     ```
+
 
 #### Connection 정보 설정하기
 PostgresOperator를 사용하기 위해서는 connection을 위한 정보를 metastore에 저장해야 한다.
@@ -272,6 +285,7 @@ my_postgres
 
  - discussion: TaskFlow API로 connection을 사용할 수 있을까? 정보를 찾아보다가 실패하였다.
 
+
 #### `template_searchpath`
  - DAG class를 initializing하면서 `template_searchpath`를 넣어줄 수 있다.
  ```python
@@ -287,7 +301,7 @@ dag = DAG(
     - type: str or List[str]
     - default로 dags 폴더는 추가되어 있음!
     - 파일을 찾을 위치를 의미
-    - 파일을 찾고, 파일의 내용에 jinja template이 적용된 경우 실행시 렌더링 해줌
+    - 파일을 찾고, 파일의 내용에 jinja template이 적용된 경우, dag 실행시 렌더링 해줌
         - 예:
         ```bash
         $ echo 'SELECT pageview from Pageviews where datetime > {{execution_date}}' >> /tmp/postgres_query.sql
@@ -299,6 +313,7 @@ dag = DAG(
             # ----------------------------------------------------------
             SELECT pageview from Pageviews where datetime > 2022-02-22T00:00:00+00:00
         ```
+
 
 ### Operator와 Hook
  - 대부분의 Operator는 어떤 태스크를 진행해야하는지에 대해서 알려준다(what)
