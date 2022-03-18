@@ -11,7 +11,7 @@
 
 ### 예제: 주식 예측 툴
 
-- 가정: 한 회사에 대한 wikipedia 페이지의 단위 기간 당 조회 수와 대중이 그 회사에 대한 호감도(긍정적인 감정)는 양의 상관관계를 가짐. 또한 한 회사의 대한 호감도가 높을 수록 그 회사의 주식이 오를 가능성이 높음. 따라서, 한 회사에 대한 wikipedia page 단위기간 당 조회수를 통해 그 회사의 주식이 추이를 예측할 수 있음.
+- 가정: 한 회사에 대한 wikipedia 페이지의 단위 기간 당 조회 수와 대중이 그 회사에 대한 호감도(긍정적인 감정)는 양의 상관관계를 가짐. 또한 한 회사의 대한 호감도가 높을 수록 그 회사의 주식이 오를 가능성이 높음. 따라서, 한 회사에 대한 wikipedia page 단위기간 당 조회수를 통해 그 회사의 주식 추이를 예측할 수 있음.
 - process:
   - 1시간에 1번씩, 단위시간 1시간의 pageview 데이터 wikipedia로부터 다운로드
   - unzip data
@@ -90,7 +90,7 @@ def _print_context(**context):
   ```
 
 - op_kwargs/op_args를 통해 보내진 값들은, 해당 function에 argument가 지정되어 있다면 해당 argument이름으로 보내지고, 아니라면 **kwargs(**context)가 존재할 시에는 kwargs/context로 보내진다.
-- Note: get_current_context를 이용해 불러오기: new, context와 다른 argument의 분리가 용이!
+- Note: get_current_context를 이용해 불러오기(new): context와 다른 argument의 분리가 용이!
 
   ```python
   from airflow.operators.python import get_current_context
