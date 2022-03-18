@@ -322,6 +322,7 @@ dag = DAG(
         - PostgresOperator에서 `template_field`가 `sql`로 되어 있고
         - PostgresOperator에서 `template_ext`가 `.sql`로 되어 있기에, operator가 `postgre_query.sql` 파일을 template 수행의 대상으로 인식했기 때문이다.
 
+        ![](./images/postgres_operator.png)
 
 ### Operator와 Hook
  - 대부분의 Operator는 어떤 태스크를 진행해야하는지에 대해서 알려준다(what)
