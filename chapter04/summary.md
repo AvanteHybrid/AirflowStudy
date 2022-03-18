@@ -6,7 +6,7 @@
 - 템플릿을 적용된 variable을 렌더링
 - PythonOperator vs 다른 operator들 (variable 템플레이팅의 방식이 다름!)
 - 디버깅을 위해 템플릿이 적용된 변수들을 렌더링하기
-- 외부 시스템을 operator를 이용하기
+- 외부 시스템을 operator를 통해 이용하기
 
 
 ### 예제: 주식 예측 툴
@@ -55,8 +55,8 @@ get_data = BashOperator(
 
 - `{{execution_data}}` 와 같이 정해진 variable을 받을 뿐 아니라, `{{ '{:02}'.format(execution_date.day) }}`와 같이 python expression을 넣는 것도 가능
 - `execution_date`와 같은 datetime type은 python의 datetime이 아니라, pendulum을 사용한다. pendulum은 datetime의 모든 기능을 가지고 있으므로, datetime과 똑같이 사용할 수 있다.
-- templating되는 operator의 field(argument)는 해당 Operator의 class attribute인 `template_fields`에 정의되어 있다.
-
+- templating되는 operator의 field(argument)는 해당 Operator의 class attribute인 `template_fields`와 `template_ext`에 정의되어 있다.
+    ![](./images/template_fields_on_python_operator.png)
 
 #### 템플레이팅 가능한 variable들
 
@@ -76,7 +76,7 @@ def _print_context(**context):
   def next_ds_python():
       print("{{ds}}") # does not work. The result is "{{ds}}" but not the date format we wanted.
   ```
-- 대신 context와 기타 variable들을 argument로 표기하여 `execution_time`과 같은 context로 받아올 수 있다. (airflow1 에서는 `provide_contest=True`여야 함)
+- 대신 context와 기타 variable들을 argument로 표기하여 `execution_time`과 같은 context로 받아올 수 있다. (airflow1 에서는 `provide_context=True`여야 함)
 
   ```python
   def my_task(ds=None):
@@ -102,7 +102,7 @@ def _print_context(**context):
       print(first_argument)
   ```
 
-- Note: op_kwargs/op_args를 통해 templating/rendering된 variable은 string이지만, variable의 원래 type으로도 가져올 수 있다. [rendering fiedls as native python objects](https://airflow.apache.org/docs/apache-airflow/stable/concepts/operators.html#rendering-fields-as-native-python-objects)
+- Note: op_kwargs/op_args를 통해 templating/rendering된 variable은 string이지만, variable의 원래 type으로도 가져올 수 있다. [rendering fields as native python objects](https://airflow.apache.org/docs/apache-airflow/stable/concepts/operators.html#rendering-fields-as-native-python-objects)
 
 
 #### Python operator에 variable 전달하기
@@ -162,7 +162,7 @@ get_data = PythonOperator(
     ![](./images/rendered_menu_inside.png)
 
     - 해당 task가 scheduling이 되어 있어야만 확인할 수 있다.
-        - 이는 당연하기도 한데, scheduling이 되어 있지 않으면 원하는 날짜의 실행기록에 접근하여 rendered 페이지에 들어갈 수 없기 때문이다.
+        - 이는 당연한데, scheduling이 되어 있지 않으면 원하는 날짜의 실행기록에 접근하여 rendered 페이지에 들어갈 수 없기 때문이다.
     - 따라서, 아직 scheduling이 되지 않은, 개발단계에서는 적합하지 않은 방식일 수 있다.
 
 
@@ -210,16 +210,20 @@ get_data = PythonOperator(
             total_order_value += value
 
         return {"total_order_value": total_order_value}
+
+    order_data = extract() # `order_data` is already transformed into blob
+    order_summary = transform('1', order_data_dict=order_data) # `order_data` once again transformed into python obj and sent/ `order_summary` is transformed
+    load(total_order_value=order_summary["total_order_value"]) # `order_summary` is transformed into python obj and sent
     ```
     - 적은 양의 string을 전달하는 것에 적합한 방식이다.
         - Discussion
             - 예를 들어, 전 태스크에서 처리한 데이터를 보관한 filename을 전달하는 용도로 사용하는 것이 바람직할 듯 하다.
-            - pickle되어 blob으로 metastore에 저장되기 때문에 데이터가 클 경우 이 데이터를 inspect하는데 애로사항이 꽃필 수 있다!
+            - pickle되어 blob으로 metastore에 저장되기 때문에, 데이터가 클 경우 이 데이터를 inspect하는데 애로사항이 꽃필 수 있다!
 
 2. 디스크나 DB와 같이 영구적인 공간에 중간 데이터를 보관하기
- - 대량의 data를 전달하는 것에 적합한 방식이다.
- - 중간 데이터를 체크하기 더욱 용이하다.
- - 책에서는 [PythonOperator를 이용해 pageview를 processing하여 고정된 이름으로 file을 남기고, 이를 다른 sql구문으로 만들어 file에 저장하고 있다.](https://github.com/BasPH/data-pipelines-with-apache-airflow/blob/master/chapter04/dags/listing_4_20.py#L49) PostgresOperator는 이렇게 남겨진 [sql구문에 접근하여 DB에 데이터를 임포트한다.](https://github.com/BasPH/data-pipelines-with-apache-airflow/blob/master/chapter04/dags/listing_4_20.py#L73)
+    - 대량의 data를 전달하는 것에 적합한 방식이다.
+    - 중간 데이터를 체크하기 더욱 용이하다.
+    - 책에서는 [PythonOperator를 이용해 pageview를 processing하여 고정된 이름으로 file을 남기고, 이를 다른 sql구문으로 만들어 file에 저장하고 있다.](https://github.com/BasPH/data-pipelines-with-apache-airflow/blob/master/chapter04/dags/listing_4_20.py#L49) PostgresOperator는 이렇게 남겨진 [sql구문에 접근하여 DB에 데이터를 임포트한다.](https://github.com/BasPH/data-pipelines-with-apache-airflow/blob/master/chapter04/dags/listing_4_20.py#L73)
 
     ```python
     def _fetch_pageviews(pagenames, execution_date):
@@ -302,7 +306,7 @@ dag = DAG(
     - default로 dags 폴더는 추가되어 있음!
     - 파일을 찾을 위치를 의미
     - 파일을 찾고, 파일의 내용에 jinja template이 적용된 경우, dag 실행시 렌더링 해줌
-        - 예:
+        - [예](./sample_files/listing_4_20.py):
         ```bash
         $ echo 'SELECT pageview from Pageviews where datetime > {{execution_date}}' >> /tmp/postgres_query.sql
 
@@ -313,6 +317,10 @@ dag = DAG(
             # ----------------------------------------------------------
             SELECT pageview from Pageviews where datetime > 2022-02-22T00:00:00+00:00
         ```
+    - 가능한 이유는 크게 세가지인데,
+        - template_searchpath가 '/tmp'로 정해져있어 `/tmp/postgres_query.sql`을 찾을 수 있었고
+        - PostgresOperator에서 `template_field`가 `sql`로 되어 있고
+        - PostgresOperator에서 `template_ext`가 `.sql`로 되어 있기에, operator가 `postgre_query.sql` 파일을 template 수행의 대상으로 인식했기 때문이다.
 
 
 ### Operator와 Hook
