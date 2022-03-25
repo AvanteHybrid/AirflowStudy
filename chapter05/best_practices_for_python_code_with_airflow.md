@@ -95,3 +95,8 @@ with DAG(
  - 가능하면 DAG 로드 속를 빠르게 하라: 스케쥴러의 performance에 매우 큰 영향! DAG loader test로 로딩 타임 체크 할것!
  - DAG의 구조를 최대한 간단하게 만들 것.
  - 한 파일 당 DAG를 최대한 줄일 것! Airflow 2는 한 파일에 여러 DAG가 있을 때도 최대한 성능을 보장하도록 설계되었지만, 여전히 여러 파일에 DAG가 나뉘어져 있을 때 보다는 덜 효율적으로 작동한다!
+
+## Dependencies
+ - bit shift 뿐 아니라 operator의 set_upstream/set_downstream으로 dependencies를 설정 가능하다.
+ - airflow.models.baseoperator의 chain/cross_downstream도 사용가능하다!
+(문서)[https://airflow.apache.org/docs/apache-airflow/stable/concepts/dags.html#task-dependencies]
