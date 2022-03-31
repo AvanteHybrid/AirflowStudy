@@ -16,7 +16,7 @@ DAG2에서는 DAG1을 찾을 수 있도록 `execution_date_fn`이 설정 되어�
 
 def _execution_dt_fn(execution_date, **kwargs):
     # retrieve hour field from current
-    execution_hour = execution_date.strftime('%H') execution date
+    execution_hour = execution_date.strftime('%H')
     # Since DAG1 is executed daily every midnight, we can calculate the time
     # by subtracting hour retrieved from current execution date.
     execution_dt_derived = execution_date - timedelta(hours=execution_hour)
