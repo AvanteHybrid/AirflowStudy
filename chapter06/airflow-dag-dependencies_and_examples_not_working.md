@@ -49,3 +49,17 @@ wait >> report
 
 ### 현상
 ![dag2 is endlessly running](./images/figure_6_20_dag2_is_endlessly_running.png)
+
+### 원인
+```python
+execution_delta=datetime.timedelta(hours=6),
+```
+의 timedelta가 hours=6 으로 되어 있지만, dag1과 dag2의 timedelta는 2시간이다.
+사실 timedelta가 exact value가 아니라 dag1의 실행시간을 포함한 timedelta면 상관없을거라고 생각했지만,
+**exact value가 아니면 먹히지 않는다는 사실을 깨닫게 되었다.**
+
+### 해결
+```python
+execution_delta=datetime.timedelta(hours=2),
+```
+timedelta를 2로 
