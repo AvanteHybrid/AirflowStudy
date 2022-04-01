@@ -71,7 +71,7 @@
 - 기본적으로, 같은 *execution_date*를 가진 특정 dag의 특정 task의 상태를 polling 한다.
   - airflow상에서 다른 DAG 자체를 인식할 수 있는 방법이 없어 특정 DAG의 특정 task 실행 상태를 metastore에서 쿼리한다.
 - execution_delta값 설정을 통해 해당 시간 **전**에 실행된 task의 상태를 polling할 수도 있다.
-    ![figure_6_22](./images/figure_6_22.png)
+    ![figure_6_22](./images/figure_6_22.PNG)
 
 
 ### Starting workflows with REST/CLI
