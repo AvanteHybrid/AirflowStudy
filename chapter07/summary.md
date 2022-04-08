@@ -90,6 +90,7 @@ load_csv = GCSToBigQueryOperator(
     - 뇌피셜로 보건데, GCSToBigQueryOperator 같은 경우가 이에 해당할 것이다.
 2. A와 B 서비스간에 직접 통신이 되지 않고, airflow가 실행되는 machine이 medium이 되어 주어야 하는 경우
     - airflow가 실행되는 machine이 medium으로 작용하기 때문에, 1에 비해 속도가 느릴 수 있다.
+    - 대부분의 경우 A에서 요청한 모든 데이터를 받아온 후, B로 이를 옮기는 방식으로 구현되어 있다.
     - 한번에 처리하는 데이터의 사이즈가 너무 크고 여러개인 경우 Out Of Memory가 일어날 수 있다.
     - [Google Transfer Operators](https://airflow.apache.org/docs/apache-airflow-providers-google/stable/operators/transfer/index.html)
 
@@ -105,3 +106,9 @@ load_csv = GCSToBigQueryOperator(
 1. **airflow는 task를 조율할 뿐, task의 동작이 세부적으로 기술되는 곳이 되어서는 안된다!** -> apache spark/docker와 같은 시스템으로 task의 동작/실행을 이양하자
 vs
 2. airflow는 task를 조율할 뿐 아니라, task의 동작이 세부적으로 기술되고, 실행하는 곳이 되어도 된다!
+
+##### 무거운 job일 경우 외부 시스템으로 동작을 이양하자.
+에어플로우가 직접 무거운 job을 돌리는 것은 바람직하지 않다. Airflow는 웬만하면 외부 시스템(apache spark/docker) 등에 job을 맡기고, completion을 기다리게 하는 것이 좋다.(위에서의 1의 입장에 가깝다.)
+
+뇌피셜로 생각하자면, airflow가 무거운 시스템을 돌리는 순간, 에어플로우 자체가 다운될 가능성도 존재하기 때문이 아닐까?
+
