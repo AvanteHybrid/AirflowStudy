@@ -102,6 +102,6 @@ load_csv = GCSToBigQueryOperator(
 #### 무거운 job을 아웃소싱하기
 
 ##### 에어플로우를 바라보는 두 가지 시선
-1. airflow는 task를 조율할 뿐, task의 동작이 세부적으로 기술되는 곳이 되어서는 안된다!
+1. **airflow는 task를 조율할 뿐, task의 동작이 세부적으로 기술되는 곳이 되어서는 안된다!** -> apache spark/docker와 같은 시스템으로 task의 동작/실행을 이양하자
 vs
-2. **airflow는 task를 조율할 뿐 아니라, task의 동작이 세부적으로 기술되고, 실행하는 곳이 되어도 된다!** -> apache spark/docker와 같은 시스템으로 task의 동작/실행을 이양하자
+2. airflow는 task를 조율할 뿐 아니라, task의 동작이 세부적으로 기술되고, 실행하는 곳이 되어도 된다!
