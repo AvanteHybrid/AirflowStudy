@@ -8,7 +8,7 @@ of this approach is that you can keep your Airflow installation lean, as Airflow
 only coordinating containerized jobs; you can keep all dependencies of specific
 tasks with the container. We’ll focus on this approach further in a future chapter.
 
-그렇다. 여러 사람이 큰 규모로 airflow가 운영될 때 여러 사람이 DAG을 작성한다면
+그렇다. 큰 규모로 airflow가 운영될 때 여러 사람이 DAG을 작성한다면
 인프라 관리자는 누가 무슨 패키지를 사용할 줄 알고 의존성을 일일이 관리하겠나.
 "도커로 만들어서 DockerOperator 사용해주세요." 라는 부탁 한마디면 마법처럼 일이 줄어든다. (아니다.)
 뒤이은 챕터에서 다룰 것 같기도 하지만, 일단 먼저 DockerOperator를 간단하게 살펴보고자 한다.
@@ -72,4 +72,4 @@ Password를 해당 json key file의 내용을 카피해 넣으면 되는 것 같
 docker-compose를 사용해서 airflow 자체를 도커 환경에서 구동하는 경우 docker operator를 사용하기 위해 별도 세팅이 필요할 것이다.
 airflow container 안에서 docker daemon을 인식할 수 있어야 하기 때문이다.
 가장 쉬운 방법은 container 실행 시 host의 `/var/run/docker.sock`을 바인딩하는 방법인데, [이런 방식](https://github.com/fclesio/airflow-docker-operator-with-compose/blob/main/docker-compose.yaml#L59)으로 세팅이 가능하다.
-경우에 따라 permission 때문에 에러가 발생하는데, 개인적으로는 `/var/run/docker.sock`의 권한 변경을 통해 문제를 해결해왔는데, 바람직한 방법인지는 잘 모르겠다.
+경우에 따라 permission 때문에 에러가 발생하는데, 개인적으로는 `/var/run/docker.sock`의 권한 변경을 통해 문제를 해결해왔다. 바람직한 방법인지는 잘 모르겠다.
