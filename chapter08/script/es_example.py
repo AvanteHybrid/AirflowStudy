@@ -5,7 +5,7 @@
 import airflow.utils.dates
 from airflow import DAG
 from airflow.operators.dummy import DummyOperator
-from es_hook.es_hook import ElasticOperator
+from es_hook_operator.es_hook_operator import ElasticOperator
 
 dag = DAG(
     dag_id="es_test",
