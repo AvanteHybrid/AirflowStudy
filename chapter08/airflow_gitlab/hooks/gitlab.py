@@ -14,7 +14,7 @@ class GitlabHook(BaseHook):
     def __init__(self, gitlab_conn_id: str, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.gitlab_conn_id = gitlab_conn_id
-        self.client = Optional[GitlabClient]
+        self.client: Optional[GitlabClient] = None
         self.get_conn()
 
     def get_conn(self) -> GitlabClient:
