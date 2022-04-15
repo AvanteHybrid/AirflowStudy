@@ -44,4 +44,5 @@ class GitlabTagSensor(GitlabSensor):
         self.tag_name = tag_name
 
     def _check_tags(self, project: ProjectManager):
-        return self.tag_name in project.tags.list()
+        gitlab_tag_names = [tag.name for tag in project.tags.list()]
+        return self.tag_name in gitlab_tag_names

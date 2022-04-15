@@ -48,7 +48,7 @@ class GitlabOperator(BaseOperator):
     def execute(self, context: Context) -> Any:
         try:
             hook = GitlabHook(gitlab_conn_id=self.gitlab_conn_id)
-            client = resource = hook.get_conn()
+            client = hook.get_conn()
             result = resource = client.projects.get(self.gitlab_project_id)
             if self.method_name:
                 result = getattr(resource, self.method_name)(**self.gitlab_method_args)
@@ -87,14 +87,12 @@ class GitlabPipelineOperator(GitlabOperator):
         self.wait_for_completion = wait_for_completion
 
     def _create_pipeline(self, project: ProjectManager):
+        variables = []
+        if self.gitlab_pipeline_variables:
+            for key, value in self.gitlab_pipeline_variables:
+                variables.append({"key": key, "value": value})
         pipeline = project.pipelines.create(
-            {
-                "ref": self.gitlab_pipeline_ref,
-                "variables": [
-                    {"key": key, "value": value}
-                    for key, value in self.gitlab_pipeline_variables.items()
-                ],
-            }
+            {"ref": self.gitlab_pipeline_ref, "variables": variables}
         )
         if not self.wait_for_completion:
             return

@@ -23,7 +23,7 @@ class GitlabHook(BaseHook):
 
         conn = self.get_connection(self.gitlab_conn_id)
         access_token = conn.password
-        url = f'{conn.schema}/{conn.host}'
+        url = f"{conn.schema}://{conn.host}"
         self.client = GitlabClient(url=url, private_token=access_token)
         self.client.auth()
         return self.client
