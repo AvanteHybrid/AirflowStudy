@@ -264,3 +264,109 @@ fetch_ratings = MovielensFetchRatingsOperator(
 ```
 
 ## Building Custom Sensor
+마지막으로 Custom Sensor를 구현하는 방법에 대해서 간단히 살펴보자.
+
+### How to define a Custom Sensor
+* [Operator와 유사한 방식](#building-a-custom-operator)으로 구현 가능하다.
+* Airflow의 `BaseSensorOperator` 클래스를 상속해야 한다.
+* `apply_defaults` 데코레이터로 `__init__` 메소드를 wrapping 하여 DAG의 `default_args` 파라미터를 통해 제공되는 값들을 전달한다. (Operator와 동일)
+* Operator의 경우 동작을 정의하기 위해서 `execute`를 구현했는데, Sensor는 `poke` 메소드를 구현하여 어떻게 상태를 체크할 지 구현한다.
+    * `execute`와 마찬가지로 `context`라는 파라미터 하나만 받는다.
+    * `poke` 메소드는 boolean 값을 반환해서 센서의 상태를 나타낸다.
+    * `False` 때는 다시 체크하기 위해 wait 하고, `True` 혹은 timeout이 될 때까지 반복한다.
+* Template 를 사용하기 위해서 클래스 내에 `template_fields`를 정의하는 것도 동일하다.
+```python
+from airflow.sensors.base import BaseSensorOperator
+from airflow.utils.decorators import apply_defaults
+
+
+class MyCustomSensor(BaseSensorOperator):
+    @apply_defaults
+    def __init__(self, **kwargs):
+        ...
+
+    def poke(self, context):
+        ...
+```
+
+Custom Sensor가 필요한 시나리오는 예제에서처럼 외부시스템의 상태를 알아내야 할 때이다.
+예제에서는 주어진 날짜의 평점 데이터가 available 한지 체크하기 위해서 커스텀 센서를 구현한다.
+```python
+class MovielensRatingsSensor(BaseSensorOperator):
+    """
+    Templating 된 start_date 와 end_date 사이에 rating 데이터가
+    준비되어 있는지 확인하는 센서.
+    """
+    template_fields = ("_start_date", "_end_date")
+
+    @apply_defaults
+    def __init__(self, conn_id, start_date="{{ds}}",
+                end_date="{{next_ds}}", **kwargs):
+        super().__init__(**kwargs)
+        self._conn_id = conn_id
+        self._start_date = start_date
+        self._end_date = end_date
+
+    def poke(self, context):
+        """
+        start_date 와 end_date 사이 기간 동안 평점 데이터가
+        하나라도 존재하는지 체크하는 메소드.
+        """
+        # API와 통신하고, 데이터를 가져오기 위해서 hook 사용
+        hook = MovielensHook(self._conn_id)
+
+        try:
+            # 레코드 중 하나라도 있는지 확인
+            next(
+                hook.get_ratings(
+                    start_date=self._start_date,
+                    end_date=self._end_date,
+                    batch_size=1,
+                )
+            )
+            return True
+        
+        except StopIteration:
+            # 레코드가 존재하지 않아서 StopIteration이 발생된 경우
+            return False
+        
+        finally:
+            hook.close()
+```
+위에서 정의한 센서를 DAG 상에서 `fetch_ratings` 태스크 전에 위치 시켜놓으면, 새로운 평점 데이터가 있는지 체크하고 있을 때만 데이터를 가져와서 랭킹을 계산하도록 할 수 있다.
+
+## Packaging Components
+여태 Custom Component를 구현하고 이를 DAG에서 사용하기 위해 DAG 디렉토리 내에 포함시켜서 사용했다.
+하지만 다른 프로젝트나 다른 사용자에게 공유해야 하는 경우 등에 적합하지 않고 파이썬 패키지로 만들어 사용하는 것이 이상적이다.
+패키징에 대한 내용은 간단하게만 짚고 넘어간다.
+
+### Bootstrapping a Python Package
+`setuptools`를 사용한 간단한 패키지 생성 예시를 들어본다.
+앞서 구현한 커스텀 컴포넌트를 `airflow_movielens`라는 패키지로 만들어보자.
+
+```bash
+$ tree airflow-movielens/
+airflow-movielens/
+└── src
+    └── airflow_movielens
+        ├── __init__.py
+        ├── hooks.py
+        ├── operators.py
+        └── sensors.py
+```
+이렇게 디렉토리 구조를 만들고, `setup.py` 파일을 만들면 된다.
+`setup.py`는 `setuptools`를 이용해 패키지를 어떻게 설치할지 정의하는 파일이다.
+`setup.py`는 다들 많이 만들어 보셨을 것이기 때문에 스킵한다..!
+
+### Installing Package
+`pip install ./airflow-movielens`를 이용하거나 `python setup.py install`등으로 설치할 수 있다.
+작성한 패키지를 배포하기 위한 방법은 두가지가 있다
+1. Git repo에 올려서 사용
+```bash
+python -m pip install git+https://github.com/...
+```
+2. PyPI와 같은 pip package feed를 사용해서 설치
+```bash
+python -m pip install airflow_movielens
+```
+3. 파일의 위치를 지정하여 로컬에서 직접 설치
