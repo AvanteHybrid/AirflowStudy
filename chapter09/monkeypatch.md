@@ -1,7 +1,7 @@
 # Monkeypatch
 책에서는 monkeypatch를 위해서 pytest-mocker를 설치해 사용하고 있다.
 
-그러나, 기본적인 monkeypatch 기능은 pytest 기본 패키지에서 fixture로 제공하고 있다. 물론 사용할 수 있는 범위가 매우 다르다.
+그러나, 기본적인 monkeypatch 기능은 pytest 기본 패키지에서 fixture로 제공하고 있다. 물론 사용할 수 있는 기능의 범위가 매우 다르다.
 
 ## Monkeypatch의 어원
  - 처음에는 guerillapatch로 불렸다. test하면서 코드를 바꾸게 되니 심히 적절한 어원이 아닐 수 없다.
