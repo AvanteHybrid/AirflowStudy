@@ -44,6 +44,39 @@ monkeypatch.delenv(name, raising=True)
 
 ```
 
+### 예제
+```python
+
+di = {
+    "hello": "there"
+}
+
+class Hello:
+    say = 'typing'
+    @classmethod
+    def baffled(*arg,**args):
+        return 'test'
+
+def monkey(*arg, **kwargs):
+    return 'testing'
+
+def test_hello(monkeypatch):
+    monkeypatch.setattr(Hello, 'baffled', monkey)
+    monkeypatch.setattr(Hello, 'say', 'type')
+    print(Hello().baffled())
+    print(Hello().say)
+
+def test_twice():
+    print(Hello().baffled())
+    print(Hello().say)
+
+def test_3(monkeypatch):
+    monkeypatch.setitem(di, 'hello', 'bye')
+    print(di)
+
+```
+
+
 ## unittest.mock.MagicMock
  - pytest를 사용하면서도 unittest의 mock을 사용할 수 있다.
  - unittest.mock.MagicMock은 unittest.mock.Mock의 서브클래스이다.
