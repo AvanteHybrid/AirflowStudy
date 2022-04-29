@@ -161,7 +161,9 @@ $ pip install apache-airflow-providers-cncf-kubernetes
 
 
 
-==========================================================================
+---
+---
+---
 # 사족: Helm chart를 이용한 Airflow deloy
  - 예전에 언급한 적이 있지만, airflow를 docker-compose를 통해 up하는 것은 지양되는 것으로 보인다.. 세팅해야 할 것이 너무 많기도 하지만, 더 좋은 방법이 존재하기 때문이다. 바로 Helm chart를 이용한 deploy이다.
 
@@ -169,7 +171,7 @@ $ pip install apache-airflow-providers-cncf-kubernetes
 kubernetes package manager! 쉽게 쿠버네티스를 관리할 수 있다!
 
 ## Airflow와 Helm chart
-2021년 중반에 공식 Airflow Helm chart가 배포되었다. 안타깝게도, 우리의 책은 2020년도에 지어졌으므로, Helm chart에 대해서는 기술하지 않는다.
+2021년 중반에 공식 Airflow Helm chart가 배포되었다. 안타깝게도, 우리의 책은 2020년도에 지어졌으므로, 공식 Airflow Helm chart에 대해서는 기술하지 않는다!
 
 ## Airflow Helm chart에서의 DAG 관리: Dockerize Dags!
 [How to manage Dags on Airflow Helm chart](https://airflow.apache.org/docs/helm-chart/stable/manage-dags-files.html)
@@ -193,7 +195,7 @@ kubernetes package manager! 쉽게 쿠버네티스를 관리할 수 있다!
  - [Airflow helm chart](https://airflow.apache.org/docs/helm-chart/stable/index.html)
  - [How to start with Airflow helm chart by Data with Marc](https://www.youtube.com/watch?v=GDOw8ByzMyY&t=603s)
 
-# Docker image의 아웃풋을 xcom으로 가져오기
+# 사족: Docker image의 아웃풋을 xcom으로 가져오기
 Operator에서 `xcom_all=True`를 세팅하면, 모든 output log가 xcom으로 들어가게 된다.
 ```python
     rank_movies = DockerOperator(
