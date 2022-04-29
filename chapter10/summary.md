@@ -164,7 +164,7 @@ $ pip install apache-airflow-providers-cncf-kubernetes
 ---
 ---
 ---
-# 사족: Helm chart를 이용한 Airflow deloy
+# 사족: Helm chart를 이용한 Airflow deploy
  - 예전에 언급한 적이 있지만, airflow를 docker-compose를 통해 up하는 것은 지양되는 것으로 보인다.. 세팅해야 할 것이 너무 많기도 하지만, 더 좋은 방법이 존재하기 때문이다. 바로 Helm chart를 이용한 deploy이다.
 
 ## Helm chart?
