@@ -12,10 +12,15 @@
 ## Variable setting하기
 ### UI로 setting하기
 ![main_admin_variable](./images/main_admin_variable.png)
+
 Main화면에서 admin-variable 클릭!
+
 ![variable menu](./images/main_admin_variable.png)
+
 Variable 메뉴에서 *+ 아이콘* 체크 or `choose file`로 JSON을 이용해 여러 variable 등록!
+
 ![variable ui setting](./images/variable%20UI%20setting.png)
+
 Setting 하기!
 
 
