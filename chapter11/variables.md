@@ -45,14 +45,14 @@ Variable.set(key='hello', value='Anita Darling')
 ```
 
 
-### Variable 불러오기
+## Variable 불러오기
 ```python
 va = Variable.get('test')
 print(va, type(va))
 ```
 
 
-### 자동으로 UI/Log에서 숨김처리(***)되는 키워드들
+## 자동으로 UI/Log에서 숨김처리(***)되는 키워드들
  - 다음의 키들의 이름으로 세팅시, 값이 자동으로 ***로 마스킹된다.
     - password
     - secret
@@ -70,7 +70,7 @@ print(va, type(va))
     ```
 
 
-### Variable 암호화 - Fenet
+## Variable 암호화 - Fenet
  - Variable과 connection은 Fernet을 통해서 암호화 된다.
  - Airflow 1.9 이후 default로 Fernet으로 암호화 된다고 한다.(docker-compose로 실행시 왜인지 잘 되지 않는다...)
  - 키를 생성하기 위해서는 다음을 실행하면 된다.
