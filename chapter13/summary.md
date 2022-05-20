@@ -66,7 +66,54 @@ $ export AIRFLOW__WEBSERVER__WEB_SERVER_SSL_KEY={privatekey path n}
 ```
 
 ## Secret management system들에서 인증 불러오기
-secret을 중앙화 시켜서 보관하는 시스템들을 이용하여 인증을 하는 방법에 대해 소개한다.
+secret을 중앙화 시켜서 보관하는 시스템들을 이용하여 인증을 하는 방법에 대해 소개한다. 책에서는 vault를 이용하는 방식을 소개하지만, 우리는 높은 확률로 GCP를 사용할 것이다. 따라서, GCP를 이용한 방식을 소개한다. [출처: airflow.apache.org](https://airflow.apache.org/docs/apache-airflow-providers-google/stable/secrets-backends/google-cloud-secret-manager-backend.html)
 
+1. 사전 조건
+    a) 필요한 패키지 설치
+    ```bash
+    $ pip install apache-airflow[google]
+    ```
 
+    b) (Google의 secret manager api 설정)[https://cloud.google.com/secret-manager/docs/configuring-secret-manager]
+
+2. airflow의 secret backend 활성화 하기
+    - airflow.cfg에서 secrets backend 설정
+    ```bash
+    [secrets]
+    backend = airflow.providers.google.cloud.secrets.secret_manager.CloudSecretManagerBackend
+    ```
+
+3. backend를 위한 parameter 설정
+```bash
+[secrets]
+backend = airflow.providers.google.cloud.secrets.secret_manager.CloudSecretManagerBackend
+backend_kwargs = {"connections_prefix": "avante_connection", "variables_prefix": "avante_variable", "gcp_key_path": "{gcp_key_file_path}"}
+```
+
+4. connection과 variable 생성은 gcloud beta secrets를 통해 가능하다
+```bash
+$ echo "mysql://example.org" | gcloud beta secrets create \
+    avante_connection-first-connection \
+    --data-file=- \
+    --replication-policy=automatic
+Created version [1] of the secret [avante_connection-first-connection].
+```
+
+airflow에서는 이를 first-connection이라는 이름으로 불러올 수 있다.
+
+```bash
+$ airflow connections get first-connection
+Id: null
+Connection Id: first-connection
+Connection Type: mysql
+Host: example.org
+Schema: ''
+Login: null
+Password: null
+Port: null
+Is Encrypted: null
+Is Extra Encrypted: null
+Extra: {}
+URI: mysql://example.org
+```
 
