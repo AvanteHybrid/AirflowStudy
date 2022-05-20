@@ -69,12 +69,12 @@ $ export AIRFLOW__WEBSERVER__WEB_SERVER_SSL_KEY={privatekey path n}
 secret을 중앙화 시켜서 보관하는 시스템들을 이용하여 인증을 하는 방법에 대해 소개한다. 책에서는 vault를 이용하는 방식을 소개하지만, 우리는 높은 확률로 GCP를 사용할 것이다. 따라서, GCP를 이용한 방식을 소개한다. [출처: airflow.apache.org](https://airflow.apache.org/docs/apache-airflow-providers-google/stable/secrets-backends/google-cloud-secret-manager-backend.html)
 
 1. 사전 조건
-    a) 필요한 패키지 설치
+    - 필요한 패키지 설치
     ```bash
     $ pip install apache-airflow[google]
     ```
 
-    b) (Google의 secret manager api 설정)[https://cloud.google.com/secret-manager/docs/configuring-secret-manager]
+    - (Google의 secret manager api 설정)[https://cloud.google.com/secret-manager/docs/configuring-secret-manager]
 
 2. airflow의 secret backend 활성화 하기
     - airflow.cfg에서 secrets backend 설정
