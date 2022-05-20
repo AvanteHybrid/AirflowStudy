@@ -55,14 +55,14 @@ airflow users create \
  - 유저 권한과 같이 중앙에서 일괄 관리가 필요한 데이터들을 저장하고 검색하는데 좋음
 
 ## 웹서버에서 오고가는 트래픽 암호화
-### Man-in-the-middle attach(MITM) 이란?
+### Man-in-the-middle attack(MITM) 이란?
  - A지점에서 B지점으로 가는 데이터를 누군가가 낚아채어 데이터를 가져가고, 마치 아무런 일도 없었던 것처럼 B로 전송하는 기법. data가 암호화 되어있지 않다면, 거기에 속한 비밀번호, 개인정보 등이 탈취될 수 있다.
  - 책에서는 data가 탈취되더라도 영향을 완화할 수 있는 **HTTPS** 암호화 기술을 설명하고 있다.
 
 ### Airflow의 웹서버에 SSL 적용하여 HTTPS 활성화 하기
 ```bash
 $ export AIRFLOW__WEBSERVER__WEB_SERVER_SSL_CERT={certificate path}
-$ export AIRFLOW__WEBSERVER__WEB_SERVER_SSL_KEY={privatekey path n}
+$ export AIRFLOW__WEBSERVER__WEB_SERVER_SSL_KEY={privatekey path}
 ```
 
 ## Secret management system들에서 인증 불러오기
